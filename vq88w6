@@ -1,0 +1,96 @@
+-- UI Prompt
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "DiscordPrompt"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 400, 0, 200)
+Frame.Position = UDim2.new(0.5, -200, 0.5, -100)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.BorderSizePixel = 0
+Frame.Parent = ScreenGui
+
+local Title = Instance.new("TextLabel")
+Title.Text = "🔐 Get Key Access"
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 24
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Parent = Frame
+
+local Message = Instance.new("TextLabel")
+Message.Text = "You must join our Discord to get the key!"
+Message.Font = Enum.Font.Gotham
+Message.TextSize = 18
+Message.TextWrapped = true
+Message.Size = UDim2.new(1, -20, 0, 60)
+Message.Position = UDim2.new(0, 10, 0, 60)
+Message.TextColor3 = Color3.fromRGB(200, 200, 200)
+Message.BackgroundTransparency = 1
+Message.Parent = Frame
+
+-- Discord Invite Button
+local InviteButton = Instance.new("TextButton")
+InviteButton.Text = "Copy Discord Invite"
+InviteButton.Font = Enum.Font.GothamBold
+InviteButton.TextSize = 18
+InviteButton.Size = UDim2.new(0, 180, 0, 40)
+InviteButton.Position = UDim2.new(0.5, -190, 1, -50)
+InviteButton.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
+InviteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+InviteButton.Parent = Frame
+
+-- Confirmation Label for copy feedback
+local CopyConfirmation = Instance.new("TextLabel")
+CopyConfirmation.Text = ""
+CopyConfirmation.Font = Enum.Font.Gotham
+CopyConfirmation.TextSize = 16
+CopyConfirmation.TextColor3 = Color3.fromRGB(0, 255, 0)
+CopyConfirmation.BackgroundTransparency = 1
+CopyConfirmation.Size = UDim2.new(0, 180, 0, 30)
+CopyConfirmation.Position = UDim2.new(0.5, -190, 1, -80)
+CopyConfirmation.Parent = Frame
+
+-- "I've Joined" Button
+local JoinButton = Instance.new("TextButton")
+JoinButton.Text = "I've Joined"
+JoinButton.Font = Enum.Font.GothamBold
+JoinButton.TextSize = 18
+JoinButton.Size = UDim2.new(0, 150, 0, 40)
+JoinButton.Position = UDim2.new(0.5, 25, 1, -50)
+JoinButton.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
+JoinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+JoinButton.Parent = Frame
+
+-- Copy to clipboard function (works in Roblox Studio or Roblox Player)
+InviteButton.MouseButton1Click:Connect(function()
+    -- Roblox Lua does NOT have native clipboard support, but in Roblox Studio you can use:
+    -- setclipboard("https://discord.gg/NMwq5ghcsF")
+    -- In Roblox Player, this function might not work depending on environment/security.
+    local success, err = pcall(function()
+        setclipboard("https://discord.gg/NMwq5ghcsF")
+    end)
+    
+    if success then
+        CopyConfirmation.Text = "Invite copied to clipboard!"
+    else
+        CopyConfirmation.Text = "Failed to copy invite."
+    end
+    
+    -- Clear the confirmation message after 3 seconds
+    delay(3, function()
+        CopyConfirmation.Text = ""
+    end)
+end)
+
+-- Proceed to load script after "I've Joined" click
+JoinButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+    loadstring(game:HttpGet("https://pastefy.app/gDbxZw7a/raw"))()
+end)
