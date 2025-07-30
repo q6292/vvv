@@ -1,112 +1,217 @@
 local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+
 local player = Players.LocalPlayer
-local PlayerGui = player:WaitForChild("PlayerGui")
 
--- Main GUI
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "DiscordPrompt"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = PlayerGui
+-- Create GUI with proper parenting and cleanup
+local gui = Instance.new("ScreenGui")
+gui.Name = "KeyAccessGUI"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = CoreGui
 
--- Main Frame
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 420, 0, 240)
-Frame.Position = UDim2.new(0.5, -210, 0.5, -120)
-Frame.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
-Frame.BorderSizePixel = 0
-Frame.ClipsDescendants = true
-Frame.Parent = ScreenGui
+-- Main Frame with optimized properties
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 350, 0, 220) -- Slightly taller for better spacing
+frame.Position = UDim2.new(0.5, -175, 0.5, -110)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BorderSizePixel = 0
+frame.AnchorPoint = Vector2.new(0.5, 0.5) -- Center anchor for smoother positioning
+frame.Parent = gui
+frame.Active = true
+frame.Draggable = true
 
--- UICorner
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 10)
-UICorner.Parent = Frame
+-- Corner
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = frame
 
--- Draggable
-Frame.Active = true
-Frame.Draggable = true
+-- Add subtle drop shadow
+local shadow = Instance.new("ImageLabel")
+shadow.Name = "Shadow"
+shadow.Image = "rbxassetid://1316045217"
+shadow.ImageColor3 = Color3.new(0, 0, 0)
+shadow.ImageTransparency = 0.8
+shadow.ScaleType = Enum.ScaleType.Slice
+shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+shadow.Size = UDim2.new(1, 20, 1, 20)
+shadow.Position = UDim2.new(0, -10, 0, -10)
+shadow.BackgroundTransparency = 1
+shadow.Parent = frame
+shadow.ZIndex = -1
 
--- Title
-local Title = Instance.new("TextLabel")
-Title.Text = "🔒 Get Key Access"
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 24
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.BackgroundTransparency = 1
-Title.Size = UDim2.new(1, 0, 0, 50)
-Title.Position = UDim2.new(0, 0, 0, 10)
-Title.Parent = Frame
+-- Title with gradient
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -40, 0, 40)
+title.Position = UDim2.new(0, 20, 0, 10)
+title.BackgroundTransparency = 1
+title.Text = "🔑 Key Access System"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = frame
 
--- Message
-local Message = Instance.new("TextLabel")
-Message.Text = "You must join our Discord to get the key!"
-Message.Font = Enum.Font.Gotham
-Message.TextSize = 18
-Message.TextColor3 = Color3.fromRGB(200, 200, 200)
-Message.BackgroundTransparency = 1
-Message.TextWrapped = true
-Message.Size = UDim2.new(1, -40, 0, 60)
-Message.Position = UDim2.new(0, 20, 0, 60)
-Message.Parent = Frame
+-- Divider line
+local divider = Instance.new("Frame")
+divider.Size = UDim2.new(1, -40, 0, 1)
+divider.Position = UDim2.new(0, 20, 0, 50)
+divider.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+divider.BorderSizePixel = 0
+divider.Parent = frame
 
--- Copy Confirmation
-local Confirm = Instance.new("TextLabel")
-Confirm.Text = ""
-Confirm.Font = Enum.Font.Gotham
-Confirm.TextSize = 16
-Confirm.TextColor3 = Color3.fromRGB(0, 255, 0)
-Confirm.BackgroundTransparency = 1
-Confirm.Size = UDim2.new(1, -20, 0, 20)
-Confirm.Position = UDim2.new(0, 10, 0, 130)
-Confirm.Parent = Frame
+-- Description with better formatting
+local desc = Instance.new("TextLabel")
+desc.Size = UDim2.new(1, -40, 0, 60)
+desc.Position = UDim2.new(0, 20, 0, 60)
+desc.BackgroundTransparency = 1
+desc.Text = "Join our Discord server to receive your exclusive access key and unlock premium features!"
+desc.TextColor3 = Color3.fromRGB(200, 200, 200)
+desc.Font = Enum.Font.Gotham
+desc.TextSize = 14
+desc.TextWrapped = true
+desc.TextXAlignment = Enum.TextXAlignment.Center
+desc.Parent = frame
 
--- Copy Invite Button
-local CopyBtn = Instance.new("TextButton")
-CopyBtn.Text = "Copy Discord Invite"
-CopyBtn.Font = Enum.Font.GothamBold
-CopyBtn.TextSize = 18
-CopyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CopyBtn.BackgroundColor3 = Color3.fromRGB(65, 105, 225)
-CopyBtn.Size = UDim2.new(0.45, -10, 0, 40)
-CopyBtn.Position = UDim2.new(0, 20, 1, -60)
-CopyBtn.Parent = Frame
+-- Button container for better organization
+local buttonContainer = Instance.new("Frame")
+buttonContainer.Size = UDim2.new(1, -40, 0, 40)
+buttonContainer.Position = UDim2.new(0, 20, 1, -60)
+buttonContainer.BackgroundTransparency = 1
+buttonContainer.Parent = frame
 
-local CopyUICorner = Instance.new("UICorner", CopyBtn)
-CopyUICorner.CornerRadius = UDim.new(0, 8)
+local buttonLayout = Instance.new("UIListLayout")
+buttonLayout.FillDirection = Enum.FillDirection.Horizontal
+buttonLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+buttonLayout.SortOrder = Enum.SortOrder.LayoutOrder
+buttonLayout.Padding = UDim.new(0, 10)
+buttonLayout.Parent = buttonContainer
 
--- I've Joined Button
-local JoinBtn = Instance.new("TextButton")
-JoinBtn.Text = "I've Joined"
-JoinBtn.Font = Enum.Font.GothamBold
-JoinBtn.TextSize = 18
-JoinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-JoinBtn.BackgroundColor3 = Color3.fromRGB(30, 144, 255)
-JoinBtn.Size = UDim2.new(0.45, -10, 0, 40)
-JoinBtn.Position = UDim2.new(0.55, 10, 1, -60)
-JoinBtn.Parent = Frame
+-- Copy Invite Button with hover effects
+local copyBtn = Instance.new("TextButton")
+copyBtn.Size = UDim2.new(0.5, -5, 1, 0)
+copyBtn.BackgroundColor3 = Color3.fromRGB(88, 101, 242) -- Discord brand color
+copyBtn.Text = "📋 Copy Invite"
+copyBtn.Font = Enum.Font.GothamBold
+copyBtn.TextColor3 = Color3.new(1, 1, 1)
+copyBtn.TextSize = 14
+copyBtn.LayoutOrder = 1
+copyBtn.AutoButtonColor = false
+copyBtn.Parent = buttonContainer
 
-local JoinUICorner = Instance.new("UICorner", JoinBtn)
-JoinUICorner.CornerRadius = UDim.new(0, 8)
+local copyCorner = Instance.new("UICorner")
+copyCorner.CornerRadius = UDim.new(0, 8)
+copyCorner.Parent = copyBtn
 
--- Copy Invite Logic
-CopyBtn.MouseButton1Click:Connect(function()
-	local success, err = pcall(function()
-		setclipboard("https://discord.gg/NMwq5ghcsF")
-	end)
+-- Joined Button with hover effects
+local joinBtn = Instance.new("TextButton")
+joinBtn.Size = UDim2.new(0.5, -5, 1, 0)
+joinBtn.BackgroundColor3 = Color3.fromRGB(87, 242, 135)
+joinBtn.Text = "✅ I've Joined"
+joinBtn.Font = Enum.Font.GothamBold
+joinBtn.TextColor3 = Color3.new(1, 1, 1)
+joinBtn.TextSize = 14
+joinBtn.LayoutOrder = 2
+joinBtn.AutoButtonColor = false
+joinBtn.Parent = buttonContainer
 
-	if success then
-		Confirm.Text = "✅ Invite copied to clipboard!"
-	else
-		Confirm.Text = "❌ Failed to copy invite."
-	end
+local joinCorner = Instance.new("UICorner")
+joinCorner.CornerRadius = UDim.new(0, 8)
+joinCorner.Parent = joinBtn
 
-	task.delay(3, function()
-		Confirm.Text = ""
-	end)
+-- Button hover effects
+local function buttonHoverEffect(button, hoverColor, originalColor)
+    local tweenService = game:GetService("TweenService")
+    
+    button.MouseEnter:Connect(function()
+        local tween = tweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = hoverColor})
+        tween:Play()
+    end)
+    
+    button.MouseLeave:Connect(function()
+        local tween = tweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = originalColor})
+        tween:Play()
+    end)
+end
+
+buttonHoverEffect(copyBtn, Color3.fromRGB(71, 82, 196), Color3.fromRGB(88, 101, 242))
+buttonHoverEffect(joinBtn, Color3.fromRGB(69, 196, 107), Color3.fromRGB(87, 242, 135))
+
+-- Close button (optional)
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 24, 0, 24)
+closeBtn.Position = UDim2.new(1, -32, 0, 10)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Text = "×"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+closeBtn.TextSize = 24
+closeBtn.Parent = frame
+
+-- Function to clean up
+local function destroyGUI()
+    gui:Destroy()
+end
+
+-- Button functionality
+local DISCORD_INVITE = "https://discord.gg/NMwq5ghcsF" -- Replace with your invite
+
+copyBtn.MouseButton1Click:Connect(function()
+    setclipboard(DISCORD_INVITE)
+    
+    -- Show confirmation
+    local originalText = copyBtn.Text
+    copyBtn.Text = "Copied!"
+    
+    task.delay(1.5, function()
+        if copyBtn then
+            copyBtn.Text = originalText
+        end
+    end)
 end)
 
--- Continue Button Logic
-JoinBtn.MouseButton1Click:Connect(function()
-	ScreenGui:Destroy()
-	loadstring(game:HttpGet("https://pastefy.app/gDbxZw7a/raw"))()
+joinBtn.MouseButton1Click:Connect(function()
+    destroyGUI()
+    -- Proceed to key verification system
+    -- You would typically open another GUI here for key input
+end)
+
+closeBtn.MouseButton1Click:Connect(destroyGUI)
+
+-- Make frame draggable with better UX
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        updateInput(input)
+    end
 end)
